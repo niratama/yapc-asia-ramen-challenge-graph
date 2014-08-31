@@ -1,0 +1,38 @@
+{
+  "name": "yapc-asia-ramen-challenge-graph",
+  "version": "0.1.0",
+  "authors": [
+    "Kenichi Kobayashi <niratama3@gmail.com>"
+  ],
+  "description": "YAPC::Asia Ramen Challenge Graph",
+  "main": "static/main.min.js",
+  "license": "MIT",
+  "homepage": "https://github.com/niratama/yapc-asia-ramen-challenge-graph",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "vis": "~3.3.0",
+    "jquery": "~2.1.1",
+    "bootstrap": "~3.2.0",
+    "mustache": "~0.8.2"
+  },
+  "exportsOverride": {
+    "jquery": {
+      "": [
+        "dist/jquery.min.js"
+      ]
+    },
+    "bootstrap": {
+      "": [
+        "dist/js/bootstrap.min.js",
+        "dist/css/bootstrap.min.css",
+        "dist/fonts/*"
+      ]
+    }
+  }
+}

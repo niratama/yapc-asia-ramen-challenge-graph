@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+  <title>YAPC::Asia Ramen Challenge Graph</title>
+  <link href="vendor/bootstrap/bootstrap.min.css" rel="stylesheet" />
+  <link href="vendor/vis/vis.min.css" rel="stylesheet" />
+  <link href="main.min.css" rel="stylesheet" />
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/bootstrap.min.js"></script>
+  <script src="vendor/mustache/mustache.js"></script>
+  <script src="vendor/vis/vis.min.js"></script>
+  <script src="main.min.js"></script>
+  <script id="tweet-tmpl" type="x-tmpl-mustache">
+    <div class="tweet">
+      <span class="screen_name">{{ user.screen_name }}</span>:<span class="text">{{ text }}</span>
+    </div>
+  </script>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div id="network" class="col-md-8"></div>
+      <div id="tweets" class="col-md-4"></div>
+    </div>
+  </div>
+</body>
+</html>
