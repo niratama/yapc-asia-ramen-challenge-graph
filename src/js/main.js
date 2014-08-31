@@ -44,7 +44,6 @@ $(function () {
           var template = $('#tweet-tmpl').html();
           Mustache.parse(template);
           var rendered = Mustache.render(template, status);
-          var tweet = $(rendered);
           tweets.append(rendered);
         });
       });

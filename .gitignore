@@ -3,3 +3,4 @@ bower_components
 static
 cache
 *.swp
+.perl-version
