@@ -8,6 +8,7 @@ use JSON;
 
 use Log::Minimal;
 
+my $keyword = '#yapcramen';
 my $search_interval = 15;
 my $cache_file = 'cache/statuses_cache.json';
 my $config = pit_get('twitter_app_yapcramen', require => {
@@ -117,7 +118,7 @@ sub lookup_users {
 }
 
 my @statuses;
-my %query = ( q => '#yapcramen', count => 100 );
+my %query = ( q => $keyword, count => 50, include_entities => 1 );
 if (-f $cache_file) {
   my $data = read_json_file($cache_file);
   @statuses = @{$data->{statuses}};
@@ -132,6 +133,12 @@ while (1) {
   my $r = $nt->search(\%query);
   debugf ddf $r->{search_metadata};
   debugf 'statuses: %d', scalar(@{$r->{statuses}});
+
+  if (scalar(@{$r->{statuses}}) == 0 && defined($refresh_url)) {
+    debugf 'retry to fetch statuses';
+    sleep $search_interval;
+    next;
+  }
 
   push @current_statuses, @{$r->{statuses}};
   $refresh_url ||= $r->{search_metadata}->{refresh_url};
