@@ -8,8 +8,9 @@ use JSON;
 
 use Log::Minimal;
 
+my $search_interval = 15;
 my $cache_file = 'cache/statuses_cache.json';
-my $config = pit_get('twitter_app_newsweb', require => {
+my $config = pit_get('twitter_app_yapcramen', require => {
   'consumer_key' => 'Twitter API key',
   'consumer_secret' => 'Twitter API secret',
   'token' => 'Twitter Access Token',
@@ -43,6 +44,16 @@ sub write_json_file {
   open my $fh, '>', $filename or die q(can't write file $filename: $!);
   print $fh JSON->new->utf8->pretty->encode($data);
   close $fh;
+}
+
+sub split_queries {
+  my ($str) = @_;
+
+  $str =~ s/^\?//;
+  my @query = map { $_ =~ s/%([0-9a-fA-F]{2})/chr(hex($1))/ge; $_ }
+              map { split('=', $_, 2) }
+              split('&', $str);
+  return @query;
 }
 
 sub add_node {
@@ -105,32 +116,34 @@ sub lookup_users {
   }
 }
 
-my $max_id;
 my @statuses;
 my %query = ( q => '#yapcramen', count => 100 );
 if (-f $cache_file) {
   my $data = read_json_file($cache_file);
   @statuses = @{$data->{statuses}};
-  $query{since_id} = $data->{max_id};
+  %query = split_queries($data->{refresh_url}) if defined $data->{refresh_url};
 }
 
 my @current_statuses;
+my $refresh_url;
 # あるだけ検索
 while (1) {
   debugf ddf \%query;
   my $r = $nt->search(\%query);
   debugf ddf $r->{search_metadata};
-  debugf "rows:%d", scalar(@{$r->{statuses}});
+  debugf 'statuses: %d', scalar(@{$r->{statuses}});
 
   push @current_statuses, @{$r->{statuses}};
-  $max_id ||= $r->{search_metadata}->{max_id};
+  $refresh_url ||= $r->{search_metadata}->{refresh_url};
 
   # next_resultがなければおしまい
   last unless exists $r->{search_metadata}->{next_results};
+  debugf 'fetch more statuses';
 
-  my ($next) = ($r->{search_metadata}->{next_results} =~ m/max_id=(\d+)/);
-  debugf "next max_id %d", $next;
-  $query{max_id} = $next;
+  # 次のクエリを作る
+  %query = split_queries($r->{search_metadata}->{next_results});
+
+  sleep $search_interval;
 }
 
 unshift @statuses, @current_statuses;
@@ -165,6 +178,6 @@ write_json_file('static/statuses.json', \%statuses);
 
 my $new_cache = {
   statuses => \@statuses,
-  max_id => $max_id,
+  refresh_url => $refresh_url,
 };
 write_json_file($cache_file, $new_cache);
