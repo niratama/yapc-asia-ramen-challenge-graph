@@ -63,13 +63,12 @@ module.exports = function(grunt) {
     clean: {
       dist: [ 'static' ]
     },
-    external_daemon: {
-      twstream: {
+    connect: {
+      server: {
         options: {
-          verbose: true
-        },
-        cmd: 'go',
-        args: ['run', 'twstream/twstream.go']
+          port: 3000,
+          base: 'static'
+        }
       }
     },
     watch: {
@@ -100,6 +99,7 @@ module.exports = function(grunt) {
   grunt.registerTask('build', [
     'bower', 'uglify:main', 'stylus:main', 'copy:html'
   ]);
-  grunt.registerTask('default', [ 'test', 'clean', 'build', 'watch']);
+  grunt.registerTask('default',
+    [ 'test', 'clean', 'build', 'connect', 'watch']);
 };
 /* vi:set sts=2 sw=2 et: */
