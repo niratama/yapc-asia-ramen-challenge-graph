@@ -18,6 +18,12 @@ $(function () {
           thumb_url: RegExp.$1+'/media/?size=t'
         };
       }
+      if (url.match(/^(http:\/\/p\.twipple\.jp\/)([\w]+)$/)) {
+        return {
+          link_url: url,
+          thumb_url: RegExp.$1+'show/thumb/'+RegExp.$2
+        };
+      }
     }
   };
   var entity_replace_template = {};
