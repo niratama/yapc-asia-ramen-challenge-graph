@@ -12,7 +12,12 @@
   <script src="main.min.js"></script>
   <script id="tweet-tmpl" type="x-tmpl-mustache">
     <div class="tweet">
-      <span class="screen_name">@{{ status.user.screen_name }}</span> <span class="text">{{{ text_expanded }}}</span>
+      <div>
+        <span class="screen_name">@{{ status.user.screen_name }}</span> <span class="text">{{{ text_expanded }}}</span>
+      </div>
+      <div class="text-right">
+        <span class="created_at">{{ created_at_locale }}</span>
+      </div>
       {{#status.entities.media}}
         <div><a target="_blank" href="{{ url }}"><img class="thumb" src="{{ media_url }}:thumb"></a></div>
       {{/status.entities.media}}

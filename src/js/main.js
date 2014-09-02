@@ -70,15 +70,15 @@ $(function () {
         tweets.empty();
         var status_ids =
           $.unique($.map(ids, function (link_id) { return links[link_id]; }));
+        status_ids.sort(function (a, b) { return b - a; });
         $.each(status_ids, function (index, status_id) {
           var status = statuses[status_id];
           var template = $('#tweet-tmpl').html();
           Mustache.parse(template);
-          var text_expanded = expand_tweet_text(status);
-          console.log(text_expanded);
           var rendered = Mustache.render(template, {
             status: status,
-            text_expanded: text_expanded
+            text_expanded: expand_tweet_text(status),
+            created_at_locale: (new Date(status.created_at)).toLocaleString()
           });
           tweets.append(rendered);
         });
