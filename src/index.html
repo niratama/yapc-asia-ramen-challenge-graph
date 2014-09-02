@@ -12,9 +12,17 @@
   <script src="main.min.js"></script>
   <script id="tweet-tmpl" type="x-tmpl-mustache">
     <div class="tweet">
-      <span class="screen_name">{{ user.screen_name }}</span>:<span class="text">{{ text }}</span>
+      <span class="screen_name">@{{ status.user.screen_name }}</span> <span class="text">{{{ text_expanded }}}</span>
+      {{#status.entities.media}}
+        <div><a target="_blank" href="{{ url }}"><img class="thumb" src="{{ media_url }}:thumb"></a></div>
+      {{/status.entities.media}}
     </div>
   </script>
+  <script id="media-tmpl" type="x-tmpl-mustache"><a href="{{ expanded_url }}" target="_blank">{{ display_url }}</a></script>
+  <script id="urls-tmpl" type="x-tmpl-mustache"><a href="{{ expanded_url }}" target="_blank">{{ display_url }}</a></script>
+  <script id="user_mentions-tmpl" type="x-tmpl-mustache"><a href="https://twitter.com/{{ screen_name }}" target="_blank">@{{ screen_name }}</a></script>
+  <script id="hashtags-tmpl" type="x-tmpl-mustache"><a href="https://twitter.com/hashtag/{{ text }}" target="_blank">#{{ text }}</a></script>
+  <script id="symbols-tmpl" type="x-tmpl-mustache"><a href="https://twitter.com/search?q=%24{{ text }}&src=ctag" target="_blank">${{ text }}</a></script>
 </head>
 <body>
   <div class="container-fluid">

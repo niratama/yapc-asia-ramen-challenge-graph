@@ -2,6 +2,37 @@
 $(function () {
   'use strict';
 
+  var expand_tweet_text = function (tweet) {
+    var entity_type = ['media', 'urls', 'user_mentions', 'hashtags', 'symbols'];
+    var entity_replace_template = {};
+    $.each(entity_type, function (i, type) {
+      entity_replace_template[type] = $('#'+type+'-tmpl').html();
+    });
+
+    var entities = $.map(entity_type, function (type) {
+      if (type in tweet.entities) {
+        return $.map(tweet.entities[type], function (e) {
+          return {
+            start: e.indices[0],
+            end: e.indices[1],
+            replacement: Mustache.render(entity_replace_template[type], e)
+          };
+        });
+      }
+    });
+    entities.sort(function (a, b) { return a.start - b.start; });
+    var text_expanded = '';
+    var pos = 0;
+    $.each(entities, function (i, e) {
+      text_expanded += tweet.text.substring(pos, e.start);
+      text_expanded += e.replacement;
+      pos = e.end;
+    });
+    text_expanded += tweet.text.substring(pos, tweet.text.length);
+
+    return text_expanded;
+  };
+
   $.when(
     $.ajax('nodes.json'),
     $.ajax('edges.json'),
@@ -43,7 +74,12 @@ $(function () {
           var status = statuses[status_id];
           var template = $('#tweet-tmpl').html();
           Mustache.parse(template);
-          var rendered = Mustache.render(template, status);
+          var text_expanded = expand_tweet_text(status);
+          console.log(text_expanded);
+          var rendered = Mustache.render(template, {
+            status: status,
+            text_expanded: text_expanded
+          });
           tweets.append(rendered);
         });
       });
