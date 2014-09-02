@@ -2,10 +2,21 @@ border-radius()
   border-radius: arguments
   -webkit-border-radius: arguments
 
+html, body
+  height: 100%
+  margin: 0
+
+.full-height
+  height: 100%
+
 #network
-  height: 600px
+  height: 60%
   border: 1px solid lightgray
   background: #f8f8f8
+
+#info
+  height: 40%
+  overflow-y: scroll
 
 .tweet
   border: 1px solid lightgray
@@ -17,9 +28,17 @@ border-radius()
   & .thumb
     width: 100px
     height: 100px
+    margin: 0 4px 4px 0
   & .created_at
     font-size: 90%
 
 .yrc-title
   font-size: 150%
   font-weight: bolder
+
+@media (min-width: 768px)
+  #network
+    height: 100%
+
+  #info
+    height: 100%

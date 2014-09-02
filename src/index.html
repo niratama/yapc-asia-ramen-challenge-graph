@@ -12,15 +12,15 @@
   <script src="main.min.js"></script>
   <script id="tweet-tmpl" type="x-tmpl-mustache">
     <div class="tweet">
-      <div>
-        <span class="screen_name">@{{ status.user.screen_name }}</span> <span class="text">{{{ text_expanded }}}</span>
-      </div>
-      <div class="text-right">
-        <span class="created_at">{{ created_at_locale }}</span>
-      </div>
+      <div class="clearfix">
       {{#media}}
-        <div><a target="_blank" href="{{ link_url }}"><img class="thumb" src="{{ thumb_url }}"></a></div>
+        <a target="_blank" href="{{ link_url }}"><img class="thumb pull-left" src="{{ thumb_url }}"></a>
       {{/media}}
+        <span class="screen_name">@{{ status.user.screen_name }}</span> <span class="text">{{{ text_expanded }}}</span>
+        <div class="text-right">
+          <span class="created_at">{{ created_at_locale }}</span>
+        </div>
+      </div>
     </div>
   </script>
   <script id="media-tmpl" type="x-tmpl-mustache"><a href="{{ expanded_url }}" target="_blank">{{ display_url }}</a></script>
@@ -30,14 +30,16 @@
   <script id="symbols-tmpl" type="x-tmpl-mustache"><a href="https://twitter.com/search?q=%24{{ text }}&src=ctag" target="_blank">${{ text }}</a></script>
 </head>
 <body>
-  <div class="container-fluid">
-    <div class="row">
-      <div id="network" class="col-md-8"></div>
-      <div class="col-md-4">
-        <div class="yrc-title row text-center">YAPC::Asia Ramen Challenge Graph</div>
-        <div class="row text-center"><a target="_blank" href="http://bayashi.net/diary/2014/0829">about YAPC::Asia Ramen Challenge</a> / <a target="_blank" href="https://github.com/niratama/yapc-asia-ramen-challenge-graph">GitHub</a></div>
+  <div class="container-fluid full-height">
+    <div class="row full-height">
+      <div id="info" class="col-sm-4 col-sm-push-8">
+        <div>
+          <div class="yrc-title row text-center">YAPC::Asia Ramen Challenge Graph</div>
+          <div class="row text-center"><a target="_blank" href="http://bayashi.net/diary/2014/0829">about YAPC::Asia Ramen Challenge</a> / <a target="_blank" href="https://github.com/niratama/yapc-asia-ramen-challenge-graph">GitHub</a></div>
+        </div>
         <div id="tweets" class="row"></div>
       </div>
+      <div id="network" class="col-sm-8 col-sm-pull-4"></div>
     </div>
   </div>
 </body>

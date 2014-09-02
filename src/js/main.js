@@ -114,5 +114,11 @@ $(function () {
           tweets.append(rendered);
         });
       });
+      var resizeNetwork = function () {
+        network.setSize($('#network').width(), $('#network').height());
+        network.zoomExtent();
+      };
+      resizeNetwork();
+      $(window).on('resize', resizeNetwork);
     });
 });
