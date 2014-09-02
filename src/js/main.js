@@ -2,35 +2,64 @@
 $(function () {
   'use strict';
 
-  var expand_tweet_text = function (tweet) {
-    var entity_type = ['media', 'urls', 'user_mentions', 'hashtags', 'symbols'];
-    var entity_replace_template = {};
-    $.each(entity_type, function (i, type) {
-      entity_replace_template[type] = $('#'+type+'-tmpl').html();
-    });
+  var entity_type = ['media', 'urls', 'user_mentions', 'hashtags', 'symbols'];
+  var entity_media_func = {
+    media: function (e) {
+      return {
+        link_url: e.url,
+        thumb_url: e.media_url + ":thumb"
+      };
+    },
+    urls: function (e) {
+      var url = e.expanded_url;
+      if (url.match(/^(http:\/\/instagr(\.am|am\.com)\/p\/[\w\-]+)\/?$/)) {
+        return {
+          link_url: url,
+          thumb_url: RegExp.$1+'/media/?size=t'
+        };
+      }
+    }
+  };
+  var entity_replace_template = {};
+  $.each(entity_type, function (i, type) {
+    entity_replace_template[type] = $('#'+type+'-tmpl').html();
+    if (!(type in entity_media_func)) {
+      entity_media_func[type] = function () {};
+    }
+  });
 
+  var expand_tweet = function (tweet) {
     var entities = $.map(entity_type, function (type) {
       if (type in tweet.entities) {
         return $.map(tweet.entities[type], function (e) {
           return {
             start: e.indices[0],
             end: e.indices[1],
-            replacement: Mustache.render(entity_replace_template[type], e)
+            replacement: Mustache.render(entity_replace_template[type], e),
+            media: entity_media_func[type](e, type)
           };
         });
       }
     });
     entities.sort(function (a, b) { return a.start - b.start; });
+
+    var media = [];
     var text_expanded = '';
     var pos = 0;
     $.each(entities, function (i, e) {
       text_expanded += tweet.text.substring(pos, e.start);
       text_expanded += e.replacement;
       pos = e.end;
+      if (e.media) {
+        media.push(e.media);
+      }
     });
     text_expanded += tweet.text.substring(pos, tweet.text.length);
 
-    return text_expanded;
+    return {
+      text: text_expanded,
+      media: media
+    };
   };
 
   $.when(
@@ -73,11 +102,13 @@ $(function () {
         status_ids.sort(function (a, b) { return b - a; });
         $.each(status_ids, function (index, status_id) {
           var status = statuses[status_id];
+          var expand = expand_tweet(status);
           var template = $('#tweet-tmpl').html();
           Mustache.parse(template);
           var rendered = Mustache.render(template, {
             status: status,
-            text_expanded: expand_tweet_text(status),
+            text_expanded: expand.text,
+            media: expand.media,
             created_at_locale: (new Date(status.created_at)).toLocaleString()
           });
           tweets.append(rendered);

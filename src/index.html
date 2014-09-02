@@ -18,9 +18,9 @@
       <div class="text-right">
         <span class="created_at">{{ created_at_locale }}</span>
       </div>
-      {{#status.entities.media}}
-        <div><a target="_blank" href="{{ url }}"><img class="thumb" src="{{ media_url }}:thumb"></a></div>
-      {{/status.entities.media}}
+      {{#media}}
+        <div><a target="_blank" href="{{ link_url }}"><img class="thumb" src="{{ thumb_url }}"></a></div>
+      {{/media}}
     </div>
   </script>
   <script id="media-tmpl" type="x-tmpl-mustache"><a href="{{ expanded_url }}" target="_blank">{{ display_url }}</a></script>
