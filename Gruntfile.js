@@ -100,6 +100,6 @@ module.exports = function(grunt) {
     'bower', 'uglify:main', 'stylus:main', 'copy:html'
   ]);
   grunt.registerTask('default',
-    [ 'test', 'clean', 'build', 'connect', 'watch']);
+    [ 'test', 'build', 'connect', 'watch']);
 };
 /* vi:set sts=2 sw=2 et: */
